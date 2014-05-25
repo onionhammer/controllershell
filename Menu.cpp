@@ -19,7 +19,7 @@ const int X_STEP          = config.get("Appearance", "StepX", 300);
 const int Y_STEP          = config.get("Appearance", "StepY", 30);
 
 // Margin/Threshold for scrolling & Distance to scroll
-const int SCROLL_MARGIN   = config.get("Behavior", "ScrollMargin", 50);                
+const int SCROLL_MARGIN   = config.get("Behavior", "ScrollMargin", 50);
 const int SCROLL_AMOUNT   = config.get("Behavior", "ScrollAmount", SCROLL_MARGIN * 2);
 
 #pragma endregion
@@ -32,7 +32,7 @@ shared_ptr<TextItem> TextItem::Add(const std::string value) {
 	result->_value = value;
 	result->menu   = menu;
 	result->_rect  = { 0, 0 };
-    
+
     // Set position of nth child element
     auto numChildren = (int)children.size();
     result->SetPosition(
@@ -230,13 +230,13 @@ int Menu::CheckScroll(const shared_ptr<TextItem> item) {
         top_margin    = Y_PAD,
         bottom_margin = _screenHeight - Y_PAD,
         // Current position of the active item on the screen
-        screen_y = item->active->getPosition() 
+        screen_y = item->active->getPosition()
                  + item->getOffset();
 
     // Scroll up required
     if (screen_y < top_margin + SCROLL_MARGIN)
         return 1;
-    
+
     // Scroll down required
     else if (screen_y > bottom_margin - SCROLL_MARGIN)
         return -1;

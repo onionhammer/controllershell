@@ -43,7 +43,7 @@ Shell::Shell() {
 
 		x = 0, y = 0;
 	}
-    
+
 	// Open an SDL Window
 	_window = SDL_CreateWindow(TITLE.c_str(),
         x, y, get<0>(DIMENSIONS), get<1>(DIMENSIONS),
@@ -76,7 +76,7 @@ void Shell::CreateMenu() {
         // create the top level menu item
         auto console  = config.getConsole(emulator);
         auto topLevel = _menu.Add(console.Name);
-        
+
         // Iterate through and add files
         for (auto romFile : Rom::Find(console))
             // Run the ROM
@@ -85,7 +85,7 @@ void Shell::CreateMenu() {
                 ->OnClick([=] {
                     // Run the emulator with the input rom
 				    Rom::Run(console, console.RomPath + romFile);
-                
+
                     // Set "game mode" to true
                     _gameMode = true;
                 });
@@ -116,7 +116,7 @@ void Shell::Run() {
 
 		// Process event loop
 		if (SDL_PollEvent(&event)) {
-			if  (event.type == SDL_QUIT || 
+			if  (event.type == SDL_QUIT ||
 			    (event.type == SDL_KEYUP && event.key.keysym.sym == SDLK_ESCAPE))
 				break;
 
@@ -134,7 +134,7 @@ void Shell::Run() {
 				case SDL_JOYAXISMOTION:
 					if (_gameMode)
 						_input.HandleGameMode(event);
-                    
+
                 case SDL_WINDOWEVENT:
                     // If app regains focus, switch off game mode
                     if (event.window.event == SDL_WINDOWEVENT_FOCUS_GAINED)

@@ -84,19 +84,19 @@ void Input::HandleEvent(SDL_Event e, Menu& menu) {
                     break;
             }
             break;
-            
+
 		case SDL_JOYBUTTONDOWN:
             // Handle joystick button
             cout << "btn: " << (int)e.jbutton.button << endl;
 
             switch (_buttonMap[e.jbutton.button]) {
-                case JOY_UP:    
+                case JOY_UP:
                     menu.TriggerNavigate(NAV_UP);
 					_lastNav = NAV_UP;
 					_scrollTimer.Reset(); // Start scroll timer
                     break;
 
-                case JOY_DOWN:  
+                case JOY_DOWN:
                     menu.TriggerNavigate(NAV_DOWN);
 					_lastNav = NAV_DOWN;
 					_scrollTimer.Reset(); // Start scroll timer
@@ -134,7 +134,7 @@ void Input::HandleIntervalEvent(SDL_Event e, Menu& menu) {
             _scrollIntervalTimer.Reset();
             break;
 
-        case INT_SCROLLINTERVAL: 
+        case INT_SCROLLINTERVAL:
             // Re-trigger last NavUP/DOWN event
 			menu.TriggerNavigate(_lastNav);
             break;
@@ -154,7 +154,7 @@ bool Input::HandleGameMode(SDL_Event e) {
                     return true;
                 }
                 return false;
-                    
+
             default:
 				// Clear counter
 				_exitTaps = 0;

@@ -37,13 +37,13 @@ vector<string> Rom::Find(const Console& console) {
         // Find all the files and directories within directory
         while ((ent = readdir(dir)) != NULL) {
             string file(ent->d_name);
-            
+
             // Filter by valid extension
 			auto fileExtension = file.substr(file.find_last_of('.'));
             if (console.RomExt.size() == 0 || fileExtension == console.RomExt)
                 roms.push_back(file);
         }
-        
+
         closedir(dir);
     }
     else {
@@ -55,7 +55,7 @@ vector<string> Rom::Find(const Console& console) {
             default:	  cout << "unknown error: " << errno << endl; break;
         }
     }
-    
+
     return roms;
 }
 

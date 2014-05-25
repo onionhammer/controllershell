@@ -1,7 +1,7 @@
 #include "Timer.h"
 
 Timer::Timer(int interval, SDL_TimerCallback callback):
-    _interval(interval), _callback(callback) { 
+    _interval(interval), _callback(callback) {
     _timer = 0;
 }
 

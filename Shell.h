@@ -10,7 +10,7 @@ public:
     Shell();
 
 	void Run();
-    
+
 private:
 	SDL_Window* _window;
 	SDL_Renderer* _renderer;
@@ -20,5 +20,5 @@ private:
 	bool _keepRunning { true };
 
 	void CreateMenu();
-    
+
 };
