@@ -1,18 +1,19 @@
-CC 		  = g++
+CC 		  = clang++
 LIB       = /usr/local/lib/
 INCLUDE   = /usr/local/include/
 SOURCES   = $(wildcard *.cpp)
 
 all: controllershell
 
-controllershell: Entry.cpp Entry.h
+controllershell: Entry.cpp
 	$(CC) 			   \
 		-I$(INCLUDE)   \
 		-L$(LIB) 	   \
 		-lsdl2    	   \
 		-lsdl2main     \
 		-lsdl2_ttf     \
-		-liniparser    \
-		-std=c++11     \
+		-linireader    \
+		-std=c++11 	   \
+		-stdlib=libc++ \
 		$(SOURCES)	   \
 		-o controllershell
