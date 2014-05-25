@@ -1,0 +1,83 @@
+#pragma once
+
+#include <iostream>
+#include <vector>
+#include <memory>
+#include <functional>
+#include <SDL2/SDL_ttf.h>
+
+class Menu;
+
+enum MoveDirection {
+	NAV_UP,
+	NAV_DOWN,
+	NAV_BACK
+};
+
+class TextItem {
+
+public:
+    // Members
+    std::vector<std::shared_ptr<TextItem>> children;
+    std::shared_ptr<TextItem> active;
+	Menu* menu;
+
+	// Constructor
+	~TextItem();
+
+    // Methods
+    std::shared_ptr<TextItem> Add(const std::string value);
+	void OnClick(std::function<void()> callback);
+	void Render(SDL_Renderer* renderer, bool isActive, int offset = 0);
+	void SetPosition(int x, int y);
+	void TriggerClick();
+    int getHeight() { return _rect.h; }
+    int getPosition() { return _rect.y; }
+    void setOffset(int value) { _offset = value; }
+    int getOffset() { return _offset; }
+
+private:
+	SDL_Rect _rect;
+	std::function<void()> _callback;
+	std::string _value;
+	SDL_Texture *_tex_Normal, *_tex_Active;
+	bool _rendered { false };
+    int _offset { 0 };
+
+	void DrawText(SDL_Renderer* renderer);
+
+};
+
+class Menu {
+
+public:
+	Menu();
+	~Menu();
+
+    // Render all items
+	void Render(SDL_Renderer* renderer);
+
+	// Create and return new menu item
+    std::shared_ptr<TextItem> Add(const std::string value);
+
+	// Trigger navigate from active item
+	void TriggerNavigate(MoveDirection direction);
+
+	// Trigger click on active item
+	void TriggerClick(bool commit);
+
+    // Check if active item is close to a margin
+    // -1 = Scroll down
+    // 0  = Don't scroll
+    // 1  = Scroll up
+    int CheckScroll(const std::shared_ptr<TextItem> item);
+
+	TTF_Font* getFont() { return _font; }
+    void setScreenHeight(int value) { _screenHeight = value; }
+
+private:
+	TTF_Font* _font;
+    std::shared_ptr<TextItem> _root;
+	int _yOffset, _screenHeight;
+
+};
