@@ -5,9 +5,9 @@ using namespace std;
 
 #pragma region Settings
 
-Settings::Settings(const string& file): _reader(file) {
-	// Load configuration
-	if (_reader.ParseError())
+Settings::Settings(const string& file) : _reader(file) {
+    // Load configuration
+    if (_reader.ParseError())
         cerr << "Failed to parse settings" << endl;
 }
 int Settings::get(const string& section, const string& name, int defaultValue) {

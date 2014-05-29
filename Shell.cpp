@@ -15,10 +15,10 @@ const string POWER_TEXT    = "power off";
 const string POWER_WARNING = "are you sure?";
 const string SHUTDOWN_CMD  = config.get("Settings", "Shutdown", "");
 
-const bool USE_FULLSCREEN = config.getBool("Settings", "Fullscreen", true);
-const bool USE_GL         = config.getBool("Settings", "UseOpenGL", false);
+const bool USE_FULLSCREEN  = config.getBool("Settings", "Fullscreen", true);
+const bool USE_GL          = config.getBool("Settings", "UseOpenGL", false);
 
-const tuple<int, int> DIMENSIONS {
+const tuple<int, int> DIMENSIONS{
     config.get("Appearance", "Width", 1422),
     config.get("Appearance", "Height", 800)
 };
@@ -29,41 +29,41 @@ const tuple<int, int> DIMENSIONS {
 
 Shell::Shell() {
     // Load settings
-	int flags { },
-        x     { SDL_WINDOWPOS_UNDEFINED },
-        y     { SDL_WINDOWPOS_UNDEFINED };
+    int flags{ },
+            x{ SDL_WINDOWPOS_UNDEFINED },
+            y{ SDL_WINDOWPOS_UNDEFINED };
 
     if (USE_GL)
         flags |= SDL_WINDOW_OPENGL;
 
     if (USE_FULLSCREEN) {
-		flags |= SDL_WINDOW_BORDERLESS
-			  |  SDL_WINDOW_MAXIMIZED
-			  |  SDL_WINDOW_INPUT_FOCUS;
+        flags |= SDL_WINDOW_BORDERLESS
+              | SDL_WINDOW_MAXIMIZED
+              | SDL_WINDOW_INPUT_FOCUS;
 
-		x = 0, y = 0;
-	}
+        x = 0, y = 0;
+    }
 
-	// Open an SDL Window
-	_window = SDL_CreateWindow(TITLE.c_str(),
+    // Open an SDL Window
+    _window = SDL_CreateWindow(TITLE.c_str(),
         x, y, get<0>(DIMENSIONS), get<1>(DIMENSIONS),
         flags);
-	if (_window == nullptr) cerr << SDL_GetError();
+    if (_window == nullptr) cerr << SDL_GetError();
 
-	// Hide the cursor
-	SDL_ShowCursor(0);
+    // Hide the cursor
+    SDL_ShowCursor(0);
 
     // Create SDL Renderer
-	_renderer = SDL_CreateRenderer(_window, 0,
-		SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
-	if (_renderer == nullptr) cerr << SDL_GetError();
+    _renderer = SDL_CreateRenderer(_window, 0,
+        SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
+    if (_renderer == nullptr) cerr << SDL_GetError();
 
-	// Initialize joystick input mappings
-	_input.InitMappings();
+    // Initialize joystick input mappings
+    _input.InitMappings();
 
     // Create menu
     _menu.setScreenHeight(get<1>(DIMENSIONS));
-	CreateMenu();
+    CreateMenu();
 }
 
 // Create a menu system
@@ -81,59 +81,59 @@ void Shell::CreateMenu() {
         for (auto romFile : Rom::Find(console))
             // Run the ROM
             topLevel
-                ->Add(Rom::CleanName(romFile))
-                ->OnClick([=] {
-                    // Run the emulator with the input rom
-				    Rom::Run(console, console.RomPath + romFile);
+            ->Add(Rom::CleanName(romFile))
+            ->OnClick([=] {
+            // Run the emulator with the input rom
+            Rom::Run(console, console.RomPath + romFile);
 
-                    // Set "game mode" to true
-                    _gameMode = true;
-                });
+            // Set "game mode" to true
+            _gameMode = true;
+        });
     }
 
     // Add Power-Off option
     _menu.Add(POWER_TEXT)
         ->Add(POWER_WARNING)
         ->OnClick([=] {
-		    // Shut down computer
+            // Shut down computer
             if (SHUTDOWN_CMD.size())
                 system(SHUTDOWN_CMD.c_str());
 
-		    _keepRunning = false;
-	    });
+            _keepRunning = false;
+        });
 }
 
 // Run the shell loop
 void Shell::Run() {
-    #define RGB(p) (Uint8)stoi(p[0]), (Uint8)stoi(p[1]), (Uint8)stoi(p[2])
+#define RGB(p) (Uint8)stoi(p[0]), (Uint8)stoi(p[1]), (Uint8)stoi(p[2])
     const auto RGB_BACKGROUND = split(BG_COLOR, ',');
     const SDL_Color BG = { RGB(RGB_BACKGROUND) };
 
-	// Render loop
-	SDL_Event event;
+    // Render loop
+    SDL_Event event;
 
-	while (_keepRunning) {
+    while (_keepRunning) {
 
-		// Process event loop
-		if (SDL_PollEvent(&event)) {
-			if  (event.type == SDL_QUIT ||
-			    (event.type == SDL_KEYUP && event.key.keysym.sym == SDLK_ESCAPE))
-				break;
+        // Process event loop
+        if (SDL_PollEvent(&event)) {
+            if (event.type == SDL_QUIT ||
+                (event.type == SDL_KEYUP && event.key.keysym.sym == SDLK_ESCAPE))
+                break;
 
-			switch (event.type) {
+            switch (event.type) {
                 case SDL_JOYBUTTONUP:
-				case SDL_JOYBUTTONDOWN:
-				case SDL_KEYDOWN:
-					// Submit event to input
+                case SDL_JOYBUTTONDOWN:
+                case SDL_KEYDOWN:
+                    // Submit event to input
                     if (_gameMode == false)
                         _input.HandleEvent(event, _menu);
-					else if (_input.HandleGameMode(event))
-						Rom::Exit(); // Exit the game
+                    else if (_input.HandleGameMode(event))
+                        Rom::Exit(); // Exit the game
                     break;
 
-				case SDL_JOYAXISMOTION:
-					if (_gameMode)
-						_input.HandleGameMode(event);
+                case SDL_JOYAXISMOTION:
+                    if (_gameMode)
+                        _input.HandleGameMode(event);
 
                 case SDL_WINDOWEVENT:
                     // If app regains focus, switch off game mode
@@ -141,23 +141,29 @@ void Shell::Run() {
                         _gameMode = false;
                     break;
 
+                case SDL_RENDER_TARGETS_RESET:
+                    // Reset all texture flags in menu
+                    cout << "Render Targets Reset" << endl;
+                    _menu.ResetTextures();
+                    break;
+
                 case SDL_USEREVENT:
                     // Pass back to input
                     _input.HandleIntervalEvent(event, _menu);
                     break;
-			}
-		}
+            }
+        }
 
         // Clear the scene
         SDL_SetRenderDrawColor(_renderer, BG.r, BG.g, BG.b, 255);
         SDL_RenderClear(_renderer);
 
-		// Render menu
+        // Render menu
         _menu.Render(_renderer);
 
         // Present scene
         SDL_RenderPresent(_renderer);
-	}
+    }
 }
 
 #pragma endregion

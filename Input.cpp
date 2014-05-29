@@ -20,7 +20,7 @@ Uint32 push_event(Uint32 interval, IntervalEvents type) {
 
     userevent.code = type;
     userevent.type = SDL_USEREVENT;
-    event.user     = userevent;
+    event.user = userevent;
 
     SDL_PushEvent(&event);
     return interval;
@@ -30,8 +30,8 @@ Uint32 push_event(Uint32 interval, IntervalEvents type) {
     Uint32 name(Uint32 interval, void *param) { return body; }
 
     DEF_TIMER(scrollIntervalTimer, push_event(interval, INT_SCROLLINTERVAL))
-    DEF_TIMER(scrollTimer,         push_event(interval, INT_SCROLL) * 0)
-    DEF_TIMER(quitTimer,           push_event(interval, INT_QUIT) * 0)
+    DEF_TIMER(scrollTimer, push_event(interval, INT_SCROLL) * 0)
+    DEF_TIMER(quitTimer, push_event(interval, INT_QUIT) * 0)
 #undef DEF_TIMER
 
 #pragma endregion
@@ -44,21 +44,21 @@ Input::Input() :
     _scrollTimer(SCROLL_START, scrollTimer),
     _quitTimer(QUIT_TIMEOUT, quitTimer) {
 
-	int numJoysticks = SDL_NumJoysticks();
+    int numJoysticks = SDL_NumJoysticks();
 
-	for (int i = 0; i < numJoysticks; ++i)
-		_joysticks.push_back(SDL_JoystickOpen(i));
+    for (int i = 0; i < numJoysticks; ++i)
+        _joysticks.push_back(SDL_JoystickOpen(i));
 
-	if (_joysticks.size())
-		cout << "All joysticks bound." << endl;
+    if (_joysticks.size())
+        cout << "All joysticks bound." << endl;
     else
-		cerr << "No Joysticks found." << endl;
+        cerr << "No Joysticks found." << endl;
 }
 
 Input::~Input() {
-	for (auto joystick : _joysticks)
-		if (SDL_JoystickGetAttached(joystick))
-			SDL_JoystickClose(joystick);
+    for (auto joystick : _joysticks)
+        if (SDL_JoystickGetAttached(joystick))
+            SDL_JoystickClose(joystick);
 }
 
 // Methods
@@ -85,21 +85,21 @@ void Input::HandleEvent(SDL_Event e, Menu& menu) {
             }
             break;
 
-		case SDL_JOYBUTTONDOWN:
+        case SDL_JOYBUTTONDOWN:
             // Handle joystick button
             cout << "btn: " << (int)e.jbutton.button << endl;
 
             switch (_buttonMap[e.jbutton.button]) {
                 case JOY_UP:
                     menu.TriggerNavigate(NAV_UP);
-					_lastNav = NAV_UP;
-					_scrollTimer.Reset(); // Start scroll timer
+                    _lastNav = NAV_UP;
+                    _scrollTimer.Reset(); // Start scroll timer
                     break;
 
                 case JOY_DOWN:
                     menu.TriggerNavigate(NAV_DOWN);
-					_lastNav = NAV_DOWN;
-					_scrollTimer.Reset(); // Start scroll timer
+                    _lastNav = NAV_DOWN;
+                    _scrollTimer.Reset(); // Start scroll timer
                     break;
 
                 case JOY_LEFT:  menu.TriggerNavigate(NAV_BACK); break;
@@ -109,17 +109,17 @@ void Input::HandleEvent(SDL_Event e, Menu& menu) {
             }
             break;
 
-		case SDL_KEYDOWN:
+        case SDL_KEYDOWN:
             // Handle keyboard
-			switch (e.key.keysym.sym) {
-				case SDLK_UP:	  menu.TriggerNavigate(NAV_UP); break;
-				case SDLK_DOWN:   menu.TriggerNavigate(NAV_DOWN); break;
-				case SDLK_LEFT:   menu.TriggerNavigate(NAV_BACK); break;
-				case SDLK_RIGHT:  menu.TriggerClick(false); break;
-				case SDLK_RETURN: menu.TriggerClick(true); break;
-			}
-			break;
-	}
+            switch (e.key.keysym.sym) {
+                case SDLK_UP:	  menu.TriggerNavigate(NAV_UP); break;
+                case SDLK_DOWN:   menu.TriggerNavigate(NAV_DOWN); break;
+                case SDLK_LEFT:   menu.TriggerNavigate(NAV_BACK); break;
+                case SDLK_RIGHT:  menu.TriggerClick(false); break;
+                case SDLK_RETURN: menu.TriggerClick(true); break;
+            }
+        break;
+    }
 }
 
 void Input::HandleIntervalEvent(SDL_Event e, Menu& menu) {
@@ -136,7 +136,7 @@ void Input::HandleIntervalEvent(SDL_Event e, Menu& menu) {
 
         case INT_SCROLLINTERVAL:
             // Re-trigger last NavUP/DOWN event
-			menu.TriggerNavigate(_lastNav);
+            menu.TriggerNavigate(_lastNav);
             break;
     }
 }
@@ -149,16 +149,16 @@ bool Input::HandleGameMode(SDL_Event e) {
                 _quitTimer.Reset();
 
                 // Count up number of times this was pressed
-				if (++_exitTaps >= TAPS_TO_QUIT) {
+                if (++_exitTaps >= TAPS_TO_QUIT) {
                     _exitTaps = 0;
                     return true;
                 }
                 return false;
 
             default:
-				// Clear counter
-				_exitTaps = 0;
-				break;
+                // Clear counter
+                _exitTaps = 0;
+                break;
         }
     }
 

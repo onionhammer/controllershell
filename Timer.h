@@ -14,6 +14,6 @@ public:
 
 private:
     int _interval;
-    SDL_TimerID _timer { 0 };
+    SDL_TimerID _timer{ 0 };
     SDL_TimerCallback _callback;
 };

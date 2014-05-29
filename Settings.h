@@ -7,9 +7,9 @@
 struct Console {
     std::string Name;
     std::string Path;
-	std::string RomPath;
+    std::string RomPath;
     std::string RomExt;
-	std::string Args;
+    std::string Args;
 };
 
 class Settings {

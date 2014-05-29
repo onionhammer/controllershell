@@ -29,29 +29,29 @@ const int SCROLL_AMOUNT   = config.get("Behavior", "ScrollAmount", SCROLL_MARGIN
 // Add child item
 shared_ptr<TextItem> TextItem::Add(const std::string value) {
     auto result    = make_shared<TextItem>();
-	result->_value = value;
-	result->menu   = menu;
-	result->_rect  = { 0, 0 };
+    result->_value = value;
+    result->menu   = menu;
+    result->_rect  = { 0, 0 };
 
     // Set position of nth child element
     auto numChildren = (int)children.size();
     result->SetPosition(
         X_PAD + X_STEP,
-		Y_PAD + Y_STEP * numChildren);
+        Y_PAD + Y_STEP * numChildren);
 
     children.push_back(result);
     return result;
 }
 
 // Event triggered when text item is clicked
-void TextItem::OnClick(std::function<void ()> callback) {
-	_callback = callback;
+void TextItem::OnClick(std::function<void()> callback) {
+    _callback = callback;
 }
 
 // Call callback (if it exists)
 void TextItem::TriggerClick() {
-	if (_callback != nullptr)
-		_callback();
+    if (_callback != nullptr)
+        _callback();
 }
 
 // Draw the item to its pre-cached textures
@@ -59,44 +59,44 @@ void TextItem::DrawText(SDL_Renderer* renderer) {
     const auto rgb_normal = split(NORMAL_COLOR, ',');
     const auto rgb_active = split(ACTIVE_COLOR, ',');
 
-	// Draw the item to its pre-cached textures
-	auto drawText = [&](bool active) {
-        #define RGB(p) (Uint8)stoi(p[0]), (Uint8)stoi(p[1]), (Uint8)stoi(p[2])
+    // Draw the item to its pre-cached textures
+    auto drawText = [&](bool active) {
+#define RGB(p) (Uint8)stoi(p[0]), (Uint8)stoi(p[1]), (Uint8)stoi(p[2])
 
         auto color = active ?
-            SDL_Color { RGB(rgb_active) } :
-            SDL_Color { RGB(rgb_normal) };
+            SDL_Color{ RGB(rgb_active) } :
+            SDL_Color{ RGB(rgb_normal) };
 
-		auto textSurface = TTF_RenderText_Blended(
+        auto textSurface = TTF_RenderText_Blended(
             menu->getFont(), _value.c_str(), color);
 
-		auto textTexture = SDL_CreateTextureFromSurface(
-			renderer, textSurface);
+        auto textTexture = SDL_CreateTextureFromSurface(
+            renderer, textSurface);
 
         SDL_QueryTexture(textTexture, nullptr, nullptr, &_rect.w, &_rect.h);
-		SDL_FreeSurface(textSurface);
-		return textTexture;
-	};
+        SDL_FreeSurface(textSurface);
+        return textTexture;
+    };
 
-	_tex_Normal = drawText(false);
-	_tex_Active = drawText(true);
-	_rendered   = true;
+    _tex_Normal = drawText(false);
+    _tex_Active = drawText(true);
+    _rendered = true;
 }
 
 // Draw the item and all its immediate children to output
 void TextItem::Render(SDL_Renderer* renderer, bool isActive, int offset) {
-	if (_rendered == false)
-		DrawText(renderer);
+    if (_rendered == false)
+        DrawText(renderer);
 
-	// Pick the texture
-	auto texture = isActive ? _tex_Active : _tex_Normal;
+    // Pick the texture
+    auto texture = isActive ? _tex_Active : _tex_Normal;
 
     // Increment by offset
     auto rect(_rect);
     rect.y += offset;
 
     // Render the current node
-	SDL_RenderCopy(renderer, texture, nullptr, &rect);
+    SDL_RenderCopy(renderer, texture, nullptr, &rect);
 
     if (isActive)
         // Render all child nodes
@@ -104,14 +104,23 @@ void TextItem::Render(SDL_Renderer* renderer, bool isActive, int offset) {
             child->Render(renderer, child.get() == active.get(), _offset);
 }
 
+void TextItem::ResetTextures(bool disposeChildren) {
+    if (_rendered) {
+        SDL_DestroyTexture(_tex_Normal);
+        SDL_DestroyTexture(_tex_Active);
+
+        if (disposeChildren)
+            for (auto child : children)
+                child->ResetTextures(true);
+
+        _rendered = false;
+    }
+}
+
+
 // Cleanup
 TextItem::~TextItem() {
-	if (_rendered) {
-		SDL_DestroyTexture(_tex_Normal);
-		SDL_DestroyTexture(_tex_Active);
-
-		_rendered = false;
-	}
+    ResetTextures(false);
 }
 
 // Set the position of the textitem
@@ -124,20 +133,20 @@ void TextItem::SetPosition(int x, int y) {
 
 #pragma region Menu
 
-Menu::Menu(): _yOffset(Y_PAD) {
-	// Create font
-	_font = TTF_OpenFont(FONT_FAMILY.c_str(), FONT_SIZE);
+Menu::Menu() : _yOffset(Y_PAD) {
+    // Create font
+    _font = TTF_OpenFont(FONT_FAMILY.c_str(), FONT_SIZE);
 
     // Create root text item
     _root = make_shared<TextItem>();
-	_root->menu = this;
+    _root->menu = this;
 }
 
 Menu::~Menu() {
-	_root.reset();
+    _root.reset();
 
-	if (_font != nullptr)
-		TTF_CloseFont(_font);
+    if (_font != nullptr)
+        TTF_CloseFont(_font);
 }
 
 // Render all child nodes
@@ -146,7 +155,7 @@ void Menu::Render(SDL_Renderer* renderer) {
     auto active(_root->active.get());
 
     for (auto child : _root->children)
-		child->Render(renderer, child.get() == active, offset);
+        child->Render(renderer, child.get() == active, offset);
 }
 
 // Add a child item
@@ -156,40 +165,40 @@ std::shared_ptr<TextItem> Menu::Add(const string value) {
     if (!_root->active)
         _root->active = result;
 
-	result->SetPosition(X_PAD, _yOffset);
-	_yOffset += Y_STEP;
+    result->SetPosition(X_PAD, _yOffset);
+    _yOffset += Y_STEP;
 
-	return result;
+    return result;
 }
 
 // Navigate UP / DOWN / BACK
 void Menu::TriggerNavigate(MoveDirection direction) {
-	// Detect level
+    // Detect level
     auto parentItem(_root->active);
-	if (!parentItem->active)
-		parentItem = _root;
+    if (!parentItem->active)
+        parentItem = _root;
 
-	// Find current item's index
-	auto firstItem = parentItem->children.begin();
+    // Find current item's index
+    auto firstItem = parentItem->children.begin();
     auto matches   = find(firstItem, parentItem->children.end(), parentItem->active);
-	auto index     = distance(firstItem, matches);
+    auto index     = distance(firstItem, matches);
 
-	switch (direction) {
-		case NAV_UP: // Go to item above
-			if (index > 0)
-				parentItem->active = parentItem->children[index - 1];
-			break;
+    switch (direction) {
+        case NAV_UP: // Go to item above
+            if (index > 0)
+                parentItem->active = parentItem->children[index - 1];
+            break;
 
-		case NAV_DOWN: // Go to item below
-			if (index < parentItem->children.size() - 1)
+        case NAV_DOWN: // Go to item below
+            if (index < parentItem->children.size() - 1)
                 parentItem->active = parentItem->children[index + 1];
-			break;
+            break;
 
-		case NAV_BACK: // Go back
+        case NAV_BACK: // Go back
             if (parentItem != _root)
                 parentItem->active = nullptr;
-			break;
-	}
+            break;
+    }
 
     // Handle scrolling
     if (direction == NAV_UP || direction == NAV_DOWN) {
@@ -197,9 +206,9 @@ void Menu::TriggerNavigate(MoveDirection direction) {
         auto scroll_dir = CheckScroll(parentItem);
 
         if ((scroll_dir == -1 && direction == NAV_DOWN) ||
-            (scroll_dir ==  1 && direction == NAV_UP)) {
+            (scroll_dir == 1 && direction == NAV_UP)) {
             auto offset = parentItem->getOffset()
-                        + SCROLL_AMOUNT * scroll_dir;
+                + SCROLL_AMOUNT * scroll_dir;
 
             if (offset > 0)
                 offset = 0;
@@ -211,18 +220,22 @@ void Menu::TriggerNavigate(MoveDirection direction) {
 
 // Navigate Forward / Into
 void Menu::TriggerClick(bool commit) {
-	auto parentItem  = _root->active;
-	auto currentItem = parentItem->active;
+    auto parentItem  = _root->active;
+    auto currentItem = parentItem->active;
 
-	if (currentItem) {
-		if (commit) // Trigger action
-			currentItem->TriggerClick();
-	}
-	else if (parentItem->children.size()) {
-		// Navigate to first child item
-		parentItem->active = parentItem->children[0];
+    if (currentItem) {
+        if (commit) // Trigger action
+            currentItem->TriggerClick();
+    }
+    else if (parentItem->children.size()) {
+        // Navigate to first child item
+        parentItem->active = parentItem->children[0];
         parentItem->setOffset(0); // Reset offset
-	}
+    }
+}
+
+void Menu::ResetTextures() {
+    _root->ResetTextures(true);
 }
 
 int Menu::CheckScroll(const shared_ptr<TextItem> item) {
@@ -231,7 +244,7 @@ int Menu::CheckScroll(const shared_ptr<TextItem> item) {
         bottom_margin = _screenHeight - Y_PAD,
         // Current position of the active item on the screen
         screen_y = item->active->getPosition()
-                 + item->getOffset();
+        + item->getOffset();
 
     // Scroll up required
     if (screen_y < top_margin + SCROLL_MARGIN)

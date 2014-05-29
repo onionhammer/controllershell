@@ -7,16 +7,16 @@
 #include "Timer.h"
 
 enum JoyButtons {
-	JOY_UP = 0,
-	JOY_RIGHT,
-	JOY_LEFT,
-	JOY_DOWN,
-	JOY_START,
-	JOY_A,
+    JOY_UP = 0,
+    JOY_RIGHT,
+    JOY_LEFT,
+    JOY_DOWN,
+    JOY_START,
+    JOY_A,
     JOY_Q
 };
 
-const auto JoyButtonNames {
+const auto JoyButtonNames{
     "JoyUP",
     "JoyRIGHT",
     "JoyLEFT",
@@ -35,22 +35,22 @@ enum IntervalEvents {
 class Input {
 
 public:
-	// Constructor
-	Input();
-	~Input();
+    // Constructor
+    Input();
+    ~Input();
 
     // Methods
-	void InitMappings();
+    void InitMappings();
     void HandleEvent(SDL_Event e, Menu& menu);
     void HandleIntervalEvent(SDL_Event e, Menu& menu);
     bool HandleGameMode(SDL_Event e);
 
 private:
-	std::vector<SDL_Joystick*> _joysticks;
-	std::map<int, JoyButtons> _buttonMap;
+    std::vector<SDL_Joystick*> _joysticks;
+    std::map<int, JoyButtons> _buttonMap;
     Timer _quitTimer,
         _scrollTimer,
         _scrollIntervalTimer;
-	MoveDirection _lastNav;
-    int _exitTaps { 0 };
+    MoveDirection _lastNav;
+    int _exitTaps{ 0 };
 };

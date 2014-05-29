@@ -39,7 +39,7 @@ vector<string> Rom::Find(const Console& console) {
             string file(ent->d_name);
 
             // Filter by valid extension
-			auto fileExtension = file.substr(file.find_last_of('.'));
+            auto fileExtension = file.substr(file.find_last_of('.'));
             if (console.RomExt.size() == 0 || fileExtension == console.RomExt)
                 roms.push_back(file);
         }
@@ -62,9 +62,8 @@ vector<string> Rom::Find(const Console& console) {
 // Generate a display name for the input filename
 // - Remove extension
 string Rom::CleanName(const string filename) {
-	return filename.substr(0, filename.find_last_of("."));
+    return filename.substr(0, filename.find_last_of("."));
 }
-
 
 // Run the emulator
 void Rom::Run(const Console& console, const string rom) {
@@ -75,58 +74,58 @@ void Rom::Run(const Console& console, const string rom) {
     // Display path used
     cout << console.Path << " " << buffer << endl;
 
-    #ifdef _WIN32
+#ifdef _WIN32
 
-	    auto workingDir = console.Path.substr(0, console.Path.find_last_of("\\"));
+    auto workingDir = console.Path.substr(0, console.Path.find_last_of("\\"));
 
-	    SHELLEXECUTEINFO shExecInfo;
+    SHELLEXECUTEINFO shExecInfo;
 
-	    shExecInfo.cbSize       = sizeof(SHELLEXECUTEINFO);
-	    shExecInfo.fMask        = SEE_MASK_NOASYNC | SEE_MASK_NOCLOSEPROCESS;
-	    shExecInfo.hwnd         = NULL;
-	    shExecInfo.lpVerb       = "runas";
-	    shExecInfo.lpFile       = console.Path.c_str();
-	    shExecInfo.lpParameters = buffer;
-	    shExecInfo.lpDirectory  = workingDir.c_str();
-	    shExecInfo.nShow        = SW_HIDE;
-	    shExecInfo.hInstApp     = NULL;
+    shExecInfo.cbSize = sizeof(SHELLEXECUTEINFO);
+    shExecInfo.fMask = SEE_MASK_NOASYNC | SEE_MASK_NOCLOSEPROCESS;
+    shExecInfo.hwnd = NULL;
+    shExecInfo.lpVerb = "runas";
+    shExecInfo.lpFile = console.Path.c_str();
+    shExecInfo.lpParameters = buffer;
+    shExecInfo.lpDirectory = workingDir.c_str();
+    shExecInfo.nShow = SW_HIDE;
+    shExecInfo.hInstApp = NULL;
 
-	    if (ShellExecuteEx(&shExecInfo))
-		    _runningGame = shExecInfo.hProcess;
+    if (ShellExecuteEx(&shExecInfo))
+        _runningGame = shExecInfo.hProcess;
 
-    #else
+#else
 
-        auto args = Rom::SplitArgs(console.Path + " " + buffer);
+    auto args = Rom::SplitArgs(console.Path + " " + buffer);
 
-        std::vector<const char *> cstr_args;
-        for (int i = 0; i < args.size(); ++i)
-            cstr_args.push_back(args[i].c_str());
-        cstr_args.push_back(NULL);
+    std::vector<const char *> cstr_args;
+    for (int i = 0; i < args.size(); ++i)
+        cstr_args.push_back(args[i].c_str());
+    cstr_args.push_back(NULL);
 
-        _runningGame = fork();
+    _runningGame = fork();
 
-        if (_runningGame == 0) {
-            // Child process
-            execv(cstr_args[0], (char**)&cstr_args[0]);
+    if (_runningGame == 0) {
+        // Child process
+        execv(cstr_args[0], (char**)&cstr_args[0]);
 
-            // If exec fails then exit forked process.
-            _exit(0);
-        }
+        // If exec fails then exit forked process.
+        _exit(0);
+    }
 
-    #endif
+#endif
 }
 
 // Exit the emulator
 void Rom::Exit() {
-    #if defined(_WIN32)
+#if defined(_WIN32)
 
-        TerminateProcess(_runningGame, 0);
+    TerminateProcess(_runningGame, 0);
 
-    #else
+#else
 
-        kill(_runningGame, SIGKILL);
+    kill(_runningGame, SIGKILL);
 
-    #endif
+#endif
 }
 
 vector<string> Rom::SplitArgs(const string command) {

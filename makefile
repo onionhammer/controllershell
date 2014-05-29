@@ -1,19 +1,23 @@
-CC 		  = clang++
-LIB       = /usr/local/lib/
-INCLUDE   = /usr/local/include/
+ifeq ($(OS),Windows_NT)
+    EXE  := .exe
+endif
+
+CC 		  = g++
+LIB       = lib
+INCLUDE   = include
 SOURCES   = $(wildcard *.cpp)
 
-all: controllershell
+all: controllershell$(EXE)
 
-controllershell: Entry.cpp
-	$(CC) 			   \
+controllershell$(EXE): $(SOURCES)
+	$(CC)              \
+        $(DWIN)        \
 		-I$(INCLUDE)   \
-		-L$(LIB) 	   \
-		-lsdl2    	   \
+		-L$(LIB)       \
+		-lsdl2         \
 		-lsdl2main     \
 		-lsdl2_ttf     \
 		-linireader    \
 		-std=c++11 	   \
-		-stdlib=libc++ \
 		$(SOURCES)	   \
 		-o controllershell

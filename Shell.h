@@ -9,16 +9,16 @@ class Shell {
 public:
     Shell();
 
-	void Run();
+    void Run();
 
 private:
-	SDL_Window* _window;
-	SDL_Renderer* _renderer;
-	Input _input;
-	Menu _menu;
-    bool _gameMode { false };
-	bool _keepRunning { true };
+    SDL_Window* _window;
+    SDL_Renderer* _renderer;
+    Input _input;
+    Menu _menu;
+    bool _gameMode{ false };
+    bool _keepRunning{ true };
 
-	void CreateMenu();
+    void CreateMenu();
 
 };
