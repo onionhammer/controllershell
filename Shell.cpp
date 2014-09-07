@@ -38,8 +38,8 @@ Shell::Shell() {
 
     if (USE_FULLSCREEN) {
         flags |= SDL_WINDOW_BORDERLESS
-              | SDL_WINDOW_MAXIMIZED
-              | SDL_WINDOW_INPUT_FOCUS;
+              |  SDL_WINDOW_MAXIMIZED
+              |  SDL_WINDOW_INPUT_FOCUS;
 
         x = 0, y = 0;
     }
@@ -81,14 +81,14 @@ void Shell::CreateMenu() {
         for (auto romFile : Rom::Find(console))
             // Run the ROM
             topLevel
-            ->Add(Rom::CleanName(romFile))
-            ->OnClick([=] {
-            // Run the emulator with the input rom
-            Rom::Run(console, console.RomPath + romFile);
+                ->Add(Rom::CleanName(romFile))
+                ->OnClick([=] {
+                    // Run the emulator with the input rom
+                    Rom::Run(console, console.RomPath + romFile);
 
-            // Set "game mode" to true
-            _gameMode = true;
-        });
+                    // Set "game mode" to true
+                    _gameMode = true;
+                });
     }
 
     // Add Power-Off option
@@ -105,7 +105,7 @@ void Shell::CreateMenu() {
 
 // Run the shell loop
 void Shell::Run() {
-#define RGB(p) (Uint8)stoi(p[0]), (Uint8)stoi(p[1]), (Uint8)stoi(p[2])
+    #define RGB(p) (Uint8)stoi(p[0]), (Uint8)stoi(p[1]), (Uint8)stoi(p[2])
     const auto RGB_BACKGROUND = split(BG_COLOR, ',');
     const SDL_Color BG = { RGB(RGB_BACKGROUND) };
 
@@ -117,7 +117,7 @@ void Shell::Run() {
         // Process event loop
         if (SDL_PollEvent(&event)) {
             if (event.type == SDL_QUIT ||
-                (event.type == SDL_KEYUP && event.key.keysym.sym == SDLK_ESCAPE))
+               (event.type == SDL_KEYUP && event.key.keysym.sym == SDLK_ESCAPE))
                 break;
 
             switch (event.type) {

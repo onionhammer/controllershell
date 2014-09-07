@@ -46,15 +46,14 @@ vector<string> Rom::Find(const Console& console) {
 
         closedir(dir);
     }
-    else {
-        // Could not open directory
+
+    else // Could not open directory
         switch (errno) {
             case ENOTDIR: cout << "Not a directory" << endl; break;
             case EACCES:  cout << "Permission denied" << endl; break;
             case ENOENT:  cout << "Directory not found" << endl; break;
             default:	  cout << "unknown error: " << errno << endl; break;
         }
-    }
 
     return roms;
 }
@@ -97,7 +96,7 @@ void Rom::Run(const Console& console, const string rom) {
 
     auto args = Rom::SplitArgs(console.Path + " " + buffer);
 
-    std::vector<const char *> cstr_args;
+    vector<const char *> cstr_args;
     for (int i = 0; i < args.size(); ++i)
         cstr_args.push_back(args[i].c_str());
     cstr_args.push_back(NULL);

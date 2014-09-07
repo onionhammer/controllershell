@@ -16,7 +16,7 @@ enum JoyButtons {
     JOY_Q
 };
 
-const auto JoyButtonNames{
+const auto JoyButtonNames {
     "JoyUP",
     "JoyRIGHT",
     "JoyLEFT",
@@ -52,5 +52,5 @@ private:
         _scrollTimer,
         _scrollIntervalTimer;
     MoveDirection _lastNav;
-    int _exitTaps{ 0 };
+    int _exitTaps { 0 };
 };

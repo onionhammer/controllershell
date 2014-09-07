@@ -27,7 +27,7 @@ const int SCROLL_AMOUNT   = config.get("Behavior", "ScrollAmount", SCROLL_MARGIN
 #pragma region Text Item
 
 // Add child item
-shared_ptr<TextItem> TextItem::Add(const std::string value) {
+shared_ptr<TextItem> TextItem::Add(const string value) {
     auto result    = make_shared<TextItem>();
     result->_value = value;
     result->menu   = menu;
@@ -44,7 +44,7 @@ shared_ptr<TextItem> TextItem::Add(const std::string value) {
 }
 
 // Event triggered when text item is clicked
-void TextItem::OnClick(std::function<void()> callback) {
+void TextItem::OnClick(function<void()> callback) {
     _callback = callback;
 }
 
@@ -159,7 +159,7 @@ void Menu::Render(SDL_Renderer* renderer) {
 }
 
 // Add a child item
-std::shared_ptr<TextItem> Menu::Add(const string value) {
+shared_ptr<TextItem> Menu::Add(const string value) {
     auto result(_root->Add(value));
 
     if (!_root->active)
@@ -242,9 +242,10 @@ int Menu::CheckScroll(const shared_ptr<TextItem> item) {
     int // Comparison of position of active item w/ margin
         top_margin    = Y_PAD,
         bottom_margin = _screenHeight - Y_PAD,
+
         // Current position of the active item on the screen
         screen_y = item->active->getPosition()
-        + item->getOffset();
+                 + item->getOffset();
 
     // Scroll up required
     if (screen_y < top_margin + SCROLL_MARGIN)
