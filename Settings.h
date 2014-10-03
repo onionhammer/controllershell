@@ -2,7 +2,7 @@
 
 #include <iostream>
 #include <vector>
-#include <INIReader.h>
+#include "include/INIReader.h"
 
 struct Console {
     std::string Name;

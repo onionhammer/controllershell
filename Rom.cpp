@@ -3,7 +3,7 @@
 
 #if defined(_WIN32)
 
-    #include "dirent.h"
+    #include "win/dirent.h"
     #include "windows.h"
 
     #define snprintf _snprintf
