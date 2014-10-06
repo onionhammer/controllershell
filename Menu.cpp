@@ -137,6 +137,11 @@ Menu::Menu() : _yOffset(Y_PAD) {
     // Create font
     _font = TTF_OpenFont(FONT_FAMILY.c_str(), FONT_SIZE);
 
+    if (_font == nullptr) {
+        cout << "Failed to find specified font: " << TTF_GetError() << std::endl;
+        exit(1);
+    }
+
     // Create root text item
     _root = make_shared<TextItem>();
     _root->menu = this;
