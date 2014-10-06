@@ -33,8 +33,14 @@ Shell::Shell() {
             x{ SDL_WINDOWPOS_UNDEFINED },
             y{ SDL_WINDOWPOS_UNDEFINED };
 
-    if (USE_GL)
-        flags |= SDL_WINDOW_OPENGL;
+    int renderflags { SDL_RENDERER_PRESENTVSYNC };
+
+    if (USE_GL) {
+        flags       |= SDL_WINDOW_OPENGL;
+        renderflags |= SDL_RENDERER_ACCELERATED;
+    }
+    else
+        renderflags |= SDL_RENDERER_SOFTWARE;
 
     if (USE_FULLSCREEN) {
         flags |= SDL_WINDOW_BORDERLESS
@@ -54,8 +60,7 @@ Shell::Shell() {
     SDL_ShowCursor(0);
 
     // Create SDL Renderer
-    _renderer = SDL_CreateRenderer(_window, 0,
-        SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
+    _renderer = SDL_CreateRenderer(_window, 0, renderflags);
     if (_renderer == nullptr) cerr << SDL_GetError();
 
     // Initialize joystick input mappings

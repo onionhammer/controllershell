@@ -134,13 +134,8 @@ void TextItem::SetPosition(int x, int y) {
 #pragma region Menu
 
 Menu::Menu() : _yOffset(Y_PAD) {
-    // Create font
-    _font = TTF_OpenFont(FONT_FAMILY.c_str(), FONT_SIZE);
-
-    if (_font == nullptr) {
-        cout << "Failed to find specified font: " << TTF_GetError() << std::endl;
-        exit(1);
-    }
+    // Load font
+    LoadFont();
 
     // Create root text item
     _root = make_shared<TextItem>();
@@ -148,10 +143,22 @@ Menu::Menu() : _yOffset(Y_PAD) {
 }
 
 Menu::~Menu() {
-    _root.reset();
+    _root->ResetTextures(true);
 
     if (_font != nullptr)
         TTF_CloseFont(_font);
+
+    _root.reset();
+}
+
+void Menu::LoadFont() {
+    // Create font
+    _font = TTF_OpenFont(FONT_FAMILY.c_str(), FONT_SIZE);
+
+    if (_font == nullptr) {
+        cout << "Failed to find specified font: " << TTF_GetError() << std::endl;
+        exit(1);
+    }
 }
 
 // Render all child nodes
@@ -241,6 +248,12 @@ void Menu::TriggerClick(bool commit) {
 
 void Menu::ResetTextures() {
     _root->ResetTextures(true);
+
+    // Re-load font
+    if (_font != nullptr)
+        TTF_CloseFont(_font);
+    
+    LoadFont();
 }
 
 int Menu::CheckScroll(const shared_ptr<TextItem> item) {

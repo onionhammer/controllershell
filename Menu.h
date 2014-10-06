@@ -55,6 +55,9 @@ public:
     Menu();
     ~Menu();
 
+    // Load font resource
+    void LoadFont();
+
     // Render all items
     void Render(SDL_Renderer* renderer);
 
