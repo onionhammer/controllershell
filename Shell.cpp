@@ -18,7 +18,7 @@ const string SHUTDOWN_CMD  = config.get("Settings", "Shutdown", "");
 const bool USE_FULLSCREEN  = config.getBool("Settings", "Fullscreen", true);
 const bool USE_GL          = config.getBool("Settings", "UseOpenGL", false);
 
-const tuple<int, int> DIMENSIONS{
+const tuple<int, int> DIMENSIONS {
     config.get("Appearance", "Width", 1422),
     config.get("Appearance", "Height", 800)
 };
@@ -139,6 +139,7 @@ void Shell::Run() {
                 case SDL_JOYAXISMOTION:
                     if (_gameMode)
                         _input.HandleGameMode(event);
+                    break;
 
                 case SDL_WINDOWEVENT:
                     // If app regains focus, switch off game mode
