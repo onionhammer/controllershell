@@ -132,8 +132,10 @@ void Shell::Run() {
                     // Submit event to input
                     if (_gameMode == false)
                         _input.HandleEvent(event, _menu);
-                    else if (_input.HandleGameMode(event))
+                    else if (_input.HandleGameMode(event)) {
                         Rom::Exit(); // Exit the game
+                        _gameMode = false;
+                    }
                     break;
 
                 case SDL_JOYAXISMOTION:
