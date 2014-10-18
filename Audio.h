@@ -1,5 +1,7 @@
 #pragma once
 
+#include <memory>
+
 enum AudioType {
     MenuAudio = 0,
     OpenAudio,
@@ -21,6 +23,7 @@ private:
 
     Uint32 audio_len;
     Uint8* audio_pos;
+    SDL_AudioDeviceID audio_device;
 
     SDL_AudioSpec wav_spec;
     std::string filename;
@@ -35,8 +38,8 @@ public:
     void Play(AudioType key);
 
 private:
-    AudioEffect _menuEffect;
-    AudioEffect _openEffect;
-    AudioEffect _closeEffect;
-    AudioEffect _shutdownEffect;
+    std::shared_ptr<AudioEffect> _menuEffect;
+    std::shared_ptr<AudioEffect> _openEffect;
+    std::shared_ptr<AudioEffect> _closeEffect;
+    std::shared_ptr<AudioEffect> _shutdownEffect;
 };

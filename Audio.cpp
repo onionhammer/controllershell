@@ -29,7 +29,12 @@ AudioEffect::AudioEffect(string filename) :
         // Set up callback
         wav_spec.callback = AudioEffect::AudioCallback;
         wav_spec.userdata = this;
-        initialized       = true;
+        audio_device      = SDL_OpenAudioDevice(nullptr, 0, &wav_spec, nullptr, 0);
+
+        if (audio_device)
+            initialized = true;
+        else
+            std::cerr << SDL_GetError() << endl;
     }
     else
         std::cerr << SDL_GetError() << endl;
@@ -37,6 +42,7 @@ AudioEffect::AudioEffect(string filename) :
 
 AudioEffect::~AudioEffect() {
     if (initialized) {
+        SDL_CloseAudioDevice(audio_device);
         SDL_FreeWAV(wav_buffer);
         initialized = false;
     }
@@ -48,28 +54,34 @@ void AudioEffect::Play() {
 
     // TODO - SDL play sound
     cout << "Playing " << filename << endl;
-    if (SDL_OpenAudio(&wav_spec, nullptr) < 0)
-        cout << "Failed to open audio file " << filename << endl;
 
-    SDL_PauseAudio(0);
-
+    audio_pos = wav_buffer; // copy sound buffer
+    audio_len = wav_length; // copy file length
+    SDL_PauseAudioDevice(audio_device, 0);
 }
 
 void AudioEffect::AudioCallback(void *userdata, Uint8 *stream, int len) {
-    auto effect = static_cast<AudioEffect*>(userdata);
+    auto effect = (AudioEffect*)userdata;
 
+    if (effect->audio_len == 0)
+        return;
+
+    len = len > effect->audio_len ? effect->audio_len : len;
+    SDL_MixAudio(stream, effect->audio_pos, len, SDL_MIX_MAXVOLUME);// mix from one buffer into another
+
+    effect->audio_pos += len;
+    effect->audio_len -= len;
 }
 
 #pragma endregion
 
 #pragma region Audio
 
-Audio::Audio():
-    _menuEffect(MENU_SOUND),
-    _openEffect(OPEN_SOUND),
-    _closeEffect(CLOSE_SOUND),
-    _shutdownEffect(SHUTDOWN_SOUND) {
-    
+Audio::Audio() {
+    _menuEffect     = make_shared<AudioEffect>(MENU_SOUND);
+    _openEffect     = make_shared<AudioEffect>(OPEN_SOUND);
+    _closeEffect    = make_shared<AudioEffect>(CLOSE_SOUND);
+    _shutdownEffect = make_shared<AudioEffect>(SHUTDOWN_SOUND);
 }
 
 Audio::~Audio() {
@@ -79,10 +91,10 @@ Audio::~Audio() {
 void Audio::Play(AudioType key) {
     // Play matching audio
     switch (key) {
-        case MenuAudio:     _menuEffect.Play(); break;
-        case OpenAudio:     _openEffect.Play(); break;
-        case CloseAudio:    _closeEffect.Play(); break;
-        case ShutdownAudio: _shutdownEffect.Play(); break;
+        case MenuAudio:     _menuEffect->Play(); break;
+        case OpenAudio:     _openEffect->Play(); break;
+        case CloseAudio:    _closeEffect->Play(); break;
+        case ShutdownAudio: _shutdownEffect->Play(); break;
     }
 }
 
