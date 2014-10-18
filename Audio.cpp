@@ -1,4 +1,7 @@
 #include <iostream>
+#include "SDL.h"
+#include "SDL_audio.h"
+
 #include "Audio.h"
 #include "Settings.h"
 
@@ -13,31 +16,73 @@ const string SHUTDOWN_SOUND = config.get("Audio", "ShutdownSound", "");
 
 #pragma endregion
 
-#pragma region Audio
+#pragma region AudioEffect
 
-Audio::Audio() {
+AudioEffect::AudioEffect(string filename) :
+    filename(filename) {
+
+    if (filename == "")
+        return;
+
+    // Load audio file
+    if (SDL_LoadWAV(filename.c_str(), &wav_spec, &wav_buffer, &wav_length)) {
+        // Set up callback
+        wav_spec.callback = AudioEffect::AudioCallback;
+        wav_spec.userdata = this;
+        initialized       = true;
+    }
+    else
+        std::cerr << SDL_GetError() << endl;
+}
+
+AudioEffect::~AudioEffect() {
+    if (initialized) {
+        SDL_FreeWAV(wav_buffer);
+        initialized = false;
+    }
+}
+
+void AudioEffect::Play() {
+    if (initialized == false)
+        return;
+
+    // TODO - SDL play sound
+    cout << "Playing " << filename << endl;
+    if (SDL_OpenAudio(&wav_spec, nullptr) < 0)
+        cout << "Failed to open audio file " << filename << endl;
+
+    SDL_PauseAudio(0);
 
 }
 
-Audio::~Audio() {
+void AudioEffect::AudioCallback(void *userdata, Uint8 *stream, int len) {
+    auto effect = static_cast<AudioEffect*>(userdata);
 
+}
+
+#pragma endregion
+
+#pragma region Audio
+
+Audio::Audio():
+    _menuEffect(MENU_SOUND),
+    _openEffect(OPEN_SOUND),
+    _closeEffect(CLOSE_SOUND),
+    _shutdownEffect(SHUTDOWN_SOUND) {
+    
+}
+
+Audio::~Audio() {
+    SDL_CloseAudio();
 }
 
 void Audio::Play(AudioType key) {
     // Play matching audio
-    string sound;
-
     switch (key) {
-        case MenuAudio:     sound = MENU_SOUND; break;
-        case OpenAudio:     sound = OPEN_SOUND; break;
-        case CloseAudio:    sound = CLOSE_SOUND; break;
-        case ShutdownAudio: sound = SHUTDOWN_SOUND; break;
-        default:            sound = ""; break;
-    }
-
-    if (sound != "") {
-        // TODO - SDL play sound
-        cout << "Playing " << sound << endl;
+        case MenuAudio:     _menuEffect.Play(); break;
+        case OpenAudio:     _openEffect.Play(); break;
+        case CloseAudio:    _closeEffect.Play(); break;
+        case ShutdownAudio: _shutdownEffect.Play(); break;
     }
 }
 

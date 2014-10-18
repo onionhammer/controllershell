@@ -84,10 +84,10 @@ public:
     TTF_Font* getFont() { return _font; }
     void setScreenHeight(int value) { _screenHeight = value; }
 
-    Audio getAudio() { return _audio; }
+    std::shared_ptr<Audio> getAudio() { return _audio; }
 
 private:
-    Audio _audio;
+    std::shared_ptr<Audio> _audio;
     TTF_Font* _font;
     std::shared_ptr<TextItem> _root;
     int _yOffset, _screenHeight;

@@ -133,13 +133,16 @@ void TextItem::SetPosition(int x, int y) {
 
 #pragma region Menu
 
-Menu::Menu() : _yOffset(Y_PAD), _audio() {
+Menu::Menu() : _yOffset(Y_PAD) {
     // Load font
     LoadFont();
 
     // Create root text item
     _root = make_shared<TextItem>();
     _root->menu = this;
+
+    // Create audio
+    _audio = make_shared<Audio>();
 }
 
 Menu::~Menu() {
@@ -149,6 +152,7 @@ Menu::~Menu() {
         TTF_CloseFont(_font);
 
     _root.reset();
+    _audio.reset();
 }
 
 void Menu::LoadFont() {
@@ -230,7 +234,7 @@ void Menu::TriggerNavigate(MoveDirection direction) {
     }
 
     // Play 'Menu' audio
-    _audio.Play(MenuAudio);
+    _audio->Play(MenuAudio);
 }
 
 // Navigate Forward / Into
