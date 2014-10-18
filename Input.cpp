@@ -82,6 +82,8 @@ void Input::HandleEvent(SDL_Event e, Menu& menu) {
                     _scrollIntervalTimer.Stop();
                     cout << "Scroll stopped." << endl;
                     break;
+
+                default: /* Do Nothing */ break;
             }
             break;
 
@@ -106,6 +108,8 @@ void Input::HandleEvent(SDL_Event e, Menu& menu) {
                 case JOY_RIGHT: menu.TriggerClick(false); break;
                 case JOY_START:
                 case JOY_A:     menu.TriggerClick(true); break;
+
+                default: /* Do Nothing */ break;
             }
             break;
 
@@ -117,6 +121,8 @@ void Input::HandleEvent(SDL_Event e, Menu& menu) {
                 case SDLK_LEFT:   menu.TriggerNavigate(NAV_BACK); break;
                 case SDLK_RIGHT:  menu.TriggerClick(false); break;
                 case SDLK_RETURN: menu.TriggerClick(true); break;
+                    
+                default: /* Do Nothing */ break;
             }
         break;
     }
@@ -138,6 +144,8 @@ void Input::HandleIntervalEvent(SDL_Event e, Menu& menu) {
             // Re-trigger last NavUP/DOWN event
             menu.TriggerNavigate(_lastNav);
             break;
+
+        default: /* Do Nothing */ break;
     }
 }
 
