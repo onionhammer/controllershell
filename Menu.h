@@ -6,6 +6,8 @@
 #include <functional>
 #include <SDL2/SDL_ttf.h>
 
+#include "Audio.h"
+
 class Menu;
 
 enum MoveDirection {
@@ -82,7 +84,10 @@ public:
     TTF_Font* getFont() { return _font; }
     void setScreenHeight(int value) { _screenHeight = value; }
 
+    Audio getAudio() { return _audio; }
+
 private:
+    Audio _audio;
     TTF_Font* _font;
     std::shared_ptr<TextItem> _root;
     int _yOffset, _screenHeight;

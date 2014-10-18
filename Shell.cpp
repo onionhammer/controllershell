@@ -93,6 +93,9 @@ void Shell::CreateMenu() {
 
                     // Set "game mode" to true
                     _gameMode = true;
+
+                    // Play "Open" audio
+                    _menu.getAudio().Play(OpenAudio);
                 });
     }
 
@@ -100,6 +103,9 @@ void Shell::CreateMenu() {
     _menu.Add(POWER_TEXT)
         ->Add(POWER_WARNING)
         ->OnClick([=] {
+            // Play "Shutdown" audio
+            _menu.getAudio().Play(ShutdownAudio);
+
             // Shut down computer
             if (SHUTDOWN_CMD.size())
                 system(SHUTDOWN_CMD.c_str());
@@ -135,6 +141,9 @@ void Shell::Run() {
                     else if (_input.HandleGameMode(event)) {
                         Rom::Exit(); // Exit the game
                         _gameMode = false;
+
+                        // Play 'Close' audio
+                        _menu.getAudio().Play(CloseAudio);
                     }
                     break;
 

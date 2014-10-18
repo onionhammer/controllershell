@@ -133,7 +133,7 @@ void TextItem::SetPosition(int x, int y) {
 
 #pragma region Menu
 
-Menu::Menu() : _yOffset(Y_PAD) {
+Menu::Menu() : _yOffset(Y_PAD), _audio() {
     // Load font
     LoadFont();
 
@@ -228,6 +228,9 @@ void Menu::TriggerNavigate(MoveDirection direction) {
             parentItem->setOffset(offset);
         }
     }
+
+    // Play 'Menu' audio
+    _audio.Play(MenuAudio);
 }
 
 // Navigate Forward / Into
