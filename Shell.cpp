@@ -107,10 +107,15 @@ void Shell::CreateMenu() {
             _menu.getAudio()->Play(ShutdownAudio);
 
             // Shut down computer
-            if (SHUTDOWN_CMD.size())
+            if (SHUTDOWN_CMD.size()) {
                 system(SHUTDOWN_CMD.c_str());
 
-            _keepRunning = false;
+                // If there is no shutdown sound, go ahead and quit
+                if (_menu.getAudio()->hasShutdown() == false)
+                    _keepRunning = false;
+            }
+            else
+                _keepRunning = false;
         });
 }
 

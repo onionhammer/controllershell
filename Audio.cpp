@@ -1,6 +1,4 @@
 #include <iostream>
-#include "SDL.h"
-#include "SDL_audio.h"
 
 #include "Audio.h"
 #include "Settings.h"
@@ -13,64 +11,41 @@ const string MENU_SOUND     = config.get("Audio", "MenuSound", "");
 const string OPEN_SOUND     = config.get("Audio", "OpenSound", "");
 const string CLOSE_SOUND    = config.get("Audio", "CloseSound", "");
 const string SHUTDOWN_SOUND = config.get("Audio", "ShutdownSound", "");
+const int VOLUME            = config.get("Audio", "Volume", 5);
 
 #pragma endregion
 
 #pragma region AudioEffect
 
-AudioEffect::AudioEffect(string filename) :
-    filename(filename) {
-
-    if (filename == "")
+AudioEffect::AudioEffect(string filename) : _filename(filename) {
+    if (_filename == "")
         return;
 
     // Load audio file
-    if (SDL_LoadWAV(filename.c_str(), &wav_spec, &wav_buffer, &wav_length)) {
-        // Set up callback
-        wav_spec.callback = AudioEffect::AudioCallback;
-        wav_spec.userdata = this;
-        audio_device      = SDL_OpenAudioDevice(nullptr, 0, &wav_spec, nullptr, 0);
+    _audio = Mix_LoadWAV(filename.c_str());
+    _audio->volume = VOLUME;
 
-        if (audio_device)
-            initialized = true;
-        else
-            std::cerr << SDL_GetError() << endl;
-    }
+    if (_audio)
+        _initialized = true;
     else
-        std::cerr << SDL_GetError() << endl;
+        cerr << SDL_GetError() << endl;
 }
 
 AudioEffect::~AudioEffect() {
-    if (initialized) {
-        SDL_CloseAudioDevice(audio_device);
-        SDL_FreeWAV(wav_buffer);
-        initialized = false;
+    if (_initialized) {
+        Mix_FreeChunk(_audio);
+        _initialized = false;
     }
 }
 
 void AudioEffect::Play() {
-    if (initialized == false)
+    if (_initialized == false)
         return;
 
-    // TODO - SDL play sound
-    cout << "Playing " << filename << endl;
-
-    audio_pos = wav_buffer; // copy sound buffer
-    audio_len = wav_length; // copy file length
-    SDL_PauseAudioDevice(audio_device, 0);
-}
-
-void AudioEffect::AudioCallback(void *userdata, Uint8 *stream, int len) {
-    auto effect = (AudioEffect*)userdata;
-
-    if (effect->audio_len == 0)
-        return;
-
-    len = len > effect->audio_len ? effect->audio_len : len;
-    SDL_MixAudio(stream, effect->audio_pos, len, SDL_MIX_MAXVOLUME);// mix from one buffer into another
-
-    effect->audio_pos += len;
-    effect->audio_len -= len;
+    // SDL Mixer -  play sound
+    cout << "Playing " << _filename << endl;
+    if (Mix_PlayChannel(-1, _audio, 0) == -1)
+        cerr << SDL_GetError() << endl;
 }
 
 #pragma endregion
@@ -78,6 +53,9 @@ void AudioEffect::AudioCallback(void *userdata, Uint8 *stream, int len) {
 #pragma region Audio
 
 Audio::Audio() {
+    if(Mix_OpenAudio( 22050, MIX_DEFAULT_FORMAT, 2, 4096 ) == -1 )
+        std::cerr << SDL_GetError();
+
     _menuEffect     = make_shared<AudioEffect>(MENU_SOUND);
     _openEffect     = make_shared<AudioEffect>(OPEN_SOUND);
     _closeEffect    = make_shared<AudioEffect>(CLOSE_SOUND);
@@ -85,7 +63,7 @@ Audio::Audio() {
 }
 
 Audio::~Audio() {
-    SDL_CloseAudio();
+    Mix_CloseAudio();
 }
 
 void Audio::Play(AudioType key) {

@@ -12,6 +12,7 @@ int main(int argc, char *argv[]) {
     // Initialize SDL, TTF, & Audio Libraries
     if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_JOYSTICK | SDL_INIT_AUDIO))
         std::cerr << SDL_GetError();
+
     if (TTF_Init())
         std::cerr << SDL_GetError();
 

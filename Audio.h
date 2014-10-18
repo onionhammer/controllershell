@@ -1,6 +1,7 @@
 #pragma once
 
 #include <memory>
+#include "SDL_mixer.h"
 
 enum AudioType {
     MenuAudio = 0,
@@ -10,24 +11,16 @@ enum AudioType {
 };
 
 class AudioEffect {
+    friend class Audio;
 public:
     AudioEffect(std::string filename);
     ~AudioEffect();
     void Play();
 
 private:
-    static void AudioCallback(void *userdata, Uint8 *stream, int len);
-
-    Uint32 wav_length;
-    Uint8* wav_buffer;
-
-    Uint32 audio_len;
-    Uint8* audio_pos;
-    SDL_AudioDeviceID audio_device;
-
-    SDL_AudioSpec wav_spec;
-    std::string filename;
-    bool initialized { false };
+    Mix_Chunk* _audio;
+    std::string _filename;
+    bool _initialized { false };
 };
 
 class Audio {
@@ -36,6 +29,7 @@ public:
     Audio();
     ~Audio();
     void Play(AudioType key);
+    bool hasShutdown() { return _shutdownEffect->_initialized; }
 
 private:
     std::shared_ptr<AudioEffect> _menuEffect;
