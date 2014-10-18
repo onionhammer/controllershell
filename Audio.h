@@ -12,6 +12,7 @@ enum AudioType {
 
 class AudioEffect {
     friend class Audio;
+
 public:
     AudioEffect(std::string filename);
     ~AudioEffect();
@@ -29,11 +30,11 @@ public:
     Audio();
     ~Audio();
     void Play(AudioType key);
-    bool hasShutdown() { return _shutdownEffect->_initialized; }
+    bool hasShutdown() { return _shutdownEffect._initialized; }
 
 private:
-    std::shared_ptr<AudioEffect> _menuEffect;
-    std::shared_ptr<AudioEffect> _openEffect;
-    std::shared_ptr<AudioEffect> _closeEffect;
-    std::shared_ptr<AudioEffect> _shutdownEffect;
+    AudioEffect _menuEffect;
+    AudioEffect _openEffect;
+    AudioEffect _closeEffect;
+    AudioEffect _shutdownEffect;
 };

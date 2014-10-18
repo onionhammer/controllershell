@@ -39,27 +39,24 @@ AudioEffect::~AudioEffect() {
 }
 
 void AudioEffect::Play() {
-    if (_initialized == false)
-        return;
+    if (_initialized) {
+        // SDL Mixer - play sound
+        cout << "Playing " << _filename << endl;
 
-    // SDL Mixer -  play sound
-    cout << "Playing " << _filename << endl;
-    if (Mix_PlayChannel(-1, _audio, 0) == -1)
-        cerr << SDL_GetError() << endl;
+        if (Mix_PlayChannel(-1, _audio, 0) == -1)
+            cerr << SDL_GetError() << endl;
+    }
 }
 
 #pragma endregion
 
 #pragma region Audio
 
-Audio::Audio() {
-    if(Mix_OpenAudio( 22050, MIX_DEFAULT_FORMAT, 2, 4096 ) == -1 )
-        std::cerr << SDL_GetError();
-
-    _menuEffect     = make_shared<AudioEffect>(MENU_SOUND);
-    _openEffect     = make_shared<AudioEffect>(OPEN_SOUND);
-    _closeEffect    = make_shared<AudioEffect>(CLOSE_SOUND);
-    _shutdownEffect = make_shared<AudioEffect>(SHUTDOWN_SOUND);
+Audio::Audio() :
+    _menuEffect(MENU_SOUND),
+    _openEffect(OPEN_SOUND),
+    _closeEffect(CLOSE_SOUND),
+    _shutdownEffect(SHUTDOWN_SOUND) {
 }
 
 Audio::~Audio() {
@@ -69,10 +66,10 @@ Audio::~Audio() {
 void Audio::Play(AudioType key) {
     // Play matching audio
     switch (key) {
-        case MenuAudio:     _menuEffect->Play(); break;
-        case OpenAudio:     _openEffect->Play(); break;
-        case CloseAudio:    _closeEffect->Play(); break;
-        case ShutdownAudio: _shutdownEffect->Play(); break;
+        case MenuAudio:     _menuEffect.Play(); break;
+        case OpenAudio:     _openEffect.Play(); break;
+        case CloseAudio:    _closeEffect.Play(); break;
+        case ShutdownAudio: _shutdownEffect.Play(); break;
     }
 }
 

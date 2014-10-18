@@ -16,6 +16,9 @@ int main(int argc, char *argv[]) {
     if (TTF_Init())
         std::cerr << SDL_GetError();
 
+    if(Mix_OpenAudio( 22050, MIX_DEFAULT_FORMAT, 2, 4096 ) == -1 )
+        std::cerr << SDL_GetError();
+
     // Create a Shell
     Shell shell;
 
