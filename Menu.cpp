@@ -194,6 +194,9 @@ void Menu::TriggerNavigate(MoveDirection direction) {
     if (!parentItem->active)
         parentItem = _root;
 
+    // Play 'Menu' audio
+    _audio->Play(MENU_AUDIO);
+
     // Find current item's index
     auto firstItem = parentItem->children.begin();
     auto matches   = find(firstItem, parentItem->children.end(), parentItem->active);
@@ -232,9 +235,6 @@ void Menu::TriggerNavigate(MoveDirection direction) {
             parentItem->setOffset(offset);
         }
     }
-
-    // Play 'Menu' audio
-    _audio->Play(MENU_AUDIO);
 }
 
 // Navigate Forward / Into
@@ -247,6 +247,9 @@ void Menu::TriggerClick(bool commit) {
             currentItem->TriggerClick();
     }
     else if (parentItem->children.size()) {
+        // Play 'Menu' audio
+        _audio->Play(MENU_AUDIO);
+        
         // Navigate to first child item
         parentItem->active = parentItem->children[0];
         parentItem->setOffset(0); // Reset offset
