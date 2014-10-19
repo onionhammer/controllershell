@@ -30,7 +30,7 @@ public:
     Audio();
     ~Audio();
     void Play(AudioType key);
-    bool hasShutdown() { return _shutdownEffect._initialized; }
+    bool hasShutdown() const { return _shutdownEffect._initialized; }
 
 private:
     AudioEffect _menuEffect;

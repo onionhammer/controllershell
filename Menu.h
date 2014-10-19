@@ -81,10 +81,10 @@ public:
     // 1  = Scroll up
     int CheckScroll(const std::shared_ptr<TextItem> item);
 
-    TTF_Font* getFont() { return _font; }
+    TTF_Font* getFont() const { return _font; }
     void setScreenHeight(int value) { _screenHeight = value; }
 
-    std::shared_ptr<Audio> getAudio() { return _audio; }
+    std::shared_ptr<Audio> getAudio() const { return _audio; }
 
 private:
     std::shared_ptr<Audio> _audio;
