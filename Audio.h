@@ -1,7 +1,7 @@
 #pragma once
 
 #include <memory>
-#include "SDL_mixer.h"
+#include <SDL2/SDL_mixer.h>
 
 enum AudioType {
     MENU_AUDIO = 0,
