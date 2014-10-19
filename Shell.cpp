@@ -95,7 +95,7 @@ void Shell::CreateMenu() {
                     _gameMode = true;
 
                     // Play "Open" audio
-                    _menu.getAudio()->Play(OpenAudio);
+                    _menu.getAudio()->Play(OPEN_AUDIO);
                 });
     }
 
@@ -104,7 +104,7 @@ void Shell::CreateMenu() {
         ->Add(POWER_WARNING)
         ->OnClick([=] {
             // Play "Shutdown" audio
-            _menu.getAudio()->Play(ShutdownAudio);
+            _menu.getAudio()->Play(SHUTDOWN_AUDIO);
 
             // Shut down computer
             if (SHUTDOWN_CMD.size()) {
@@ -148,7 +148,7 @@ void Shell::Run() {
                         _gameMode = false;
 
                         // Play 'Close' audio
-                        _menu.getAudio()->Play(CloseAudio);
+                        _menu.getAudio()->Play(CLOSE_AUDIO);
                     }
                     break;
 

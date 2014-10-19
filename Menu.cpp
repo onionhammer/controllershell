@@ -234,7 +234,7 @@ void Menu::TriggerNavigate(MoveDirection direction) {
     }
 
     // Play 'Menu' audio
-    _audio->Play(MenuAudio);
+    _audio->Play(MENU_AUDIO);
 }
 
 // Navigate Forward / Into

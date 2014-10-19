@@ -4,10 +4,10 @@
 #include "SDL_mixer.h"
 
 enum AudioType {
-    MenuAudio = 0,
-    OpenAudio,
-    CloseAudio,
-    ShutdownAudio
+    MENU_AUDIO = 0,
+    OPEN_AUDIO,
+    CLOSE_AUDIO,
+    SHUTDOWN_AUDIO
 };
 
 class AudioEffect {

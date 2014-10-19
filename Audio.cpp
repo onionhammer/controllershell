@@ -66,10 +66,10 @@ Audio::~Audio() {
 void Audio::Play(AudioType key) {
     // Play matching audio
     switch (key) {
-        case MenuAudio:     _menuEffect.Play(); break;
-        case OpenAudio:     _openEffect.Play(); break;
-        case CloseAudio:    _closeEffect.Play(); break;
-        case ShutdownAudio: _shutdownEffect.Play(); break;
+        case MENU_AUDIO:     _menuEffect.Play(); break;
+        case OPEN_AUDIO:     _openEffect.Play(); break;
+        case CLOSE_AUDIO:    _closeEffect.Play(); break;
+        case SHUTDOWN_AUDIO: _shutdownEffect.Play(); break;
     }
 }
 
