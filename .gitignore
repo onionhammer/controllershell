@@ -25,4 +25,5 @@
 controllershell
 tooling/
 lib/
+build/
 *.wav
