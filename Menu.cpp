@@ -249,7 +249,7 @@ void Menu::TriggerClick(bool commit) {
     else if (parentItem->children.size()) {
         // Play 'Menu' audio
         _audio->Play(MENU_AUDIO);
-        
+
         // Navigate to first child item
         parentItem->active = parentItem->children[0];
         parentItem->setOffset(0); // Reset offset
