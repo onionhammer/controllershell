@@ -54,7 +54,10 @@ Shell::Shell() {
     _window = SDL_CreateWindow(TITLE.c_str(),
         x, y, get<0>(DIMENSIONS), get<1>(DIMENSIONS),
         flags);
-    if (_window == nullptr) cerr << SDL_GetError();
+    if (_window == nullptr) {
+        cerr << SDL_GetError();
+        exit(1);
+    }
 
     // Hide the cursor
     SDL_ShowCursor(0);

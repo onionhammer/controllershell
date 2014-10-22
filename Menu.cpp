@@ -160,7 +160,7 @@ void Menu::LoadFont() {
     _font = TTF_OpenFont(FONT_FAMILY.c_str(), FONT_SIZE);
 
     if (_font == nullptr) {
-        cout << "Failed to find specified font: " << TTF_GetError() << std::endl;
+        cerr << "Failed to find specified font: " << TTF_GetError() << std::endl;
         exit(1);
     }
 }

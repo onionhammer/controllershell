@@ -44,15 +44,13 @@ Input::Input() :
     _scrollTimer(SCROLL_START, scrollTimer),
     _quitTimer(QUIT_TIMEOUT, quitTimer) {
 
-    int numJoysticks = SDL_NumJoysticks();
-
-    for (int i = 0; i < numJoysticks; ++i)
+    for (int i = 0, num = SDL_NumJoysticks(); i < num; ++i)
         _joysticks.push_back(SDL_JoystickOpen(i));
 
     if (_joysticks.size())
         cout << "All joysticks bound." << endl;
     else
-        cerr << "No Joysticks found." << endl;
+        cout << "No Joysticks found." << endl;
 }
 
 Input::~Input() {

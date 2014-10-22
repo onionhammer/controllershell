@@ -7,8 +7,10 @@ using namespace std;
 
 Settings::Settings(const string& file) : _reader(file) {
     // Load configuration
-    if (_reader.ParseError())
+    if (_reader.ParseError()) {
         cerr << "Failed to parse settings" << endl;
+        exit(1);
+    }
 }
 
 int Settings::get(const string& section, const string& name, int defaultValue) {

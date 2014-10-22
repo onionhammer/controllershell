@@ -10,14 +10,12 @@ int main(int argc, char *argv[]) {
     SDL_SetHint(SDL_HINT_JOYSTICK_ALLOW_BACKGROUND_EVENTS, "1");
 
     // Initialize SDL, TTF, & Audio Libraries
-    if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_JOYSTICK | SDL_INIT_AUDIO))
+    if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_JOYSTICK | SDL_INIT_AUDIO) ||
+        TTF_Init() ||
+        Mix_OpenAudio( 22050, MIX_DEFAULT_FORMAT, 2, 4096 ) == -1) {
         std::cerr << SDL_GetError();
-
-    if (TTF_Init())
-        std::cerr << SDL_GetError();
-
-    if(Mix_OpenAudio( 22050, MIX_DEFAULT_FORMAT, 2, 4096 ) == -1 )
-        std::cerr << SDL_GetError();
+        return 1;
+    }
 
     // Create a Shell
     Shell shell;

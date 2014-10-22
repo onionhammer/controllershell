@@ -5,7 +5,7 @@ set(PROJ_NAME controllershell)
 project(${PROJ_NAME} CXX)
 
 # Set C++ 11
-add_definitions(-std=c++11)
+add_definitions(-std=c++11 -stdlib=libc++)
 
 # Include directory
 include_directories(include)
